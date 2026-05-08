@@ -1,0 +1,457 @@
+### Multi-Vendor Marketplace API Testing
+### Use with VS Code REST Client extension or any HTTP client
+
+@baseUrl = http://localhost:5000/api
+@customerToken = 
+@vendorToken = 
+@vendorToken2 = 
+@adminToken = 
+@productId = 
+@productId2 = 
+@vendorId = 
+
+### ====== AUTHENTICATION ROUTES ======
+
+### Health Check
+GET {{baseUrl}}/health
+
+### Register as Customer
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "name": "John Customer",
+  "email": "customer@example.com",
+  "password": "password123",
+  "role": "customer"
+}
+
+### Register as Vendor
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "name": "Jane Vendor",
+  "email": "vendor@example.com",
+  "password": "vendorpass123",
+  "role": "vendor"
+}
+
+### Register as Admin
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "name": "Admin User",
+  "email": "admin@example.com",
+  "password": "adminpass123",
+  "role": "admin"
+}
+
+### Login User
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "customer@example.com",
+  "password": "password123"
+}
+
+### Get Current User (Protected - Any Auth)
+GET {{baseUrl}}/auth/me
+Authorization: Bearer {{customerToken}}
+
+### Admin Only Route
+GET {{baseUrl}}/auth/admin-only
+Authorization: Bearer {{adminToken}}
+
+### Vendor Only Route
+GET {{baseUrl}}/auth/vendor-only
+Authorization: Bearer {{vendorToken}}
+
+### ====== PRODUCT ROUTES ======
+
+### Get All Products (Public)
+GET {{baseUrl}}/products
+
+### Get Products with Pagination
+GET {{baseUrl}}/products?page=1&limit=10
+
+### Search Products by Category
+GET {{baseUrl}}/products?category=Electronics
+
+### Search Products by Text
+GET {{baseUrl}}/products?search=laptop
+
+### Get Product by ID (Public)
+GET {{baseUrl}}/products/{{productId}}
+
+### Get Products by Vendor (Public)
+GET {{baseUrl}}/products/vendor/{{vendorId}}
+
+### Create Product (Vendor/Admin Only)
+POST {{baseUrl}}/products
+Content-Type: application/json
+Authorization: Bearer {{vendorToken}}
+
+{
+  "name": "Wireless Headphones",
+  "description": "High-quality noise-cancelling headphones",
+  "price": 99.99,
+  "category": "Electronics",
+  "stock": 50,
+  "image": "https://example.com/headphones.jpg"
+}
+
+### Create Second Product (for testing)
+POST {{baseUrl}}/products
+Content-Type: application/json
+Authorization: Bearer {{vendorToken}}
+
+{
+  "name": "Gaming Keyboard",
+  "description": "Mechanical gaming keyboard with RGB lighting",
+  "price": 149.99,
+  "category": "Electronics",
+  "stock": 30,
+  "image": "https://example.com/keyboard.jpg"
+}
+
+### Create Product as Customer (Should Fail - 403)
+POST {{baseUrl}}/products
+Content-Type: application/json
+Authorization: Bearer {{customerToken}}
+
+{
+  "name": "USB Cable",
+  "price": 9.99,
+  "category": "Electronics",
+  "stock": 100
+}
+
+### Create Product with Invalid Data (Should Fail - 400)
+POST {{baseUrl}}/products
+Content-Type: application/json
+Authorization: Bearer {{vendorToken}}
+
+{
+  "name": "Test Product",
+  "price": -10,
+  "category": "Electronics"
+}
+
+### Create Product with Missing Fields (Should Fail - 400)
+POST {{baseUrl}}/products
+Content-Type: application/json
+Authorization: Bearer {{vendorToken}}
+
+{
+  "name": "Incomplete Product"
+}
+
+### Get My Products (Vendor Only)
+GET {{baseUrl}}/products/my-products
+Authorization: Bearer {{vendorToken}}
+
+### Get My Products as Customer (Should Fail - 403)
+GET {{baseUrl}}/products/my-products
+Authorization: Bearer {{customerToken}}
+
+### Update Product - Change Price (Owner)
+PUT {{baseUrl}}/products/{{productId}}
+Content-Type: application/json
+Authorization: Bearer {{vendorToken}}
+
+{
+  "price": 89.99,
+  "stock": 40
+}
+
+### Update Product - Change Description
+PUT {{baseUrl}}/products/{{productId}}
+Content-Type: application/json
+Authorization: Bearer {{vendorToken}}
+
+{
+  "description": "Updated: Premium wireless headphones with 40-hour battery life"
+}
+
+### Update Product - Different Vendor (Should Fail - 403)
+PUT {{baseUrl}}/products/{{productId}}
+Content-Type: application/json
+Authorization: Bearer {{vendorToken2}}
+
+{
+  "price": 199.99
+}
+
+### Update Product - Invalid Data (Should Fail - 400)
+PUT {{baseUrl}}/products/{{productId}}
+Content-Type: application/json
+Authorization: Bearer {{vendorToken}}
+
+{
+  "price": "not a number",
+  "stock": -5
+}
+
+### Delete Product (Owner)
+DELETE {{baseUrl}}/products/{{productId2}}
+Authorization: Bearer {{vendorToken}}
+
+### Delete Product - Different Vendor (Should Fail - 403)
+DELETE {{baseUrl}}/products/{{productId}}
+Authorization: Bearer {{vendorToken2}}
+
+### Delete Product as Customer (Should Fail - 403)
+DELETE {{baseUrl}}/products/{{productId}}
+Authorization: Bearer {{customerToken}}
+
+### ====== ORDER ROUTES ======
+
+### Create Order (Customer Only)
+POST {{baseUrl}}/orders
+Content-Type: application/json
+Authorization: Bearer {{customerToken}}
+
+{
+  "items": [
+    {
+      "productId": "PRODUCT_ID_HERE",
+      "quantity": 2
+    }
+  ],
+  "paymentMethod": "credit_card",
+  "shippingAddress": {
+    "street": "123 Main St",
+    "city": "New York",
+    "state": "NY",
+    "postalCode": "10001",
+    "country": "USA"
+  },
+  "notes": "Please deliver after 5 PM"
+}
+
+### Get My Orders (Customer Only)
+GET {{baseUrl}}/orders/my-orders
+Authorization: Bearer {{customerToken}}
+
+### Get Vendor Orders (Vendor Only)
+GET {{baseUrl}}/orders/vendor-orders
+Authorization: Bearer {{vendorToken}}
+
+### Get All Orders (Admin Only)
+GET {{baseUrl}}/orders
+Authorization: Bearer {{adminToken}}
+
+### Get All Orders with Pagination (Admin Only)
+GET {{baseUrl}}/orders?page=1&limit=20
+
+### Get Orders by Status (Admin Only)
+GET {{baseUrl}}/orders?status=pending
+
+### Get Order by ID (Protected)
+GET {{baseUrl}}/orders/ORDER_ID_HERE
+Authorization: Bearer {{customerToken}}
+
+### Update Order Status (Vendor/Admin Only)
+PUT {{baseUrl}}/orders/ORDER_ID_HERE/status
+Content-Type: application/json
+Authorization: Bearer {{vendorToken}}
+
+{
+  "orderStatus": "shipped"
+}
+
+### Update Payment Status (Admin Only)
+PUT {{baseUrl}}/orders/ORDER_ID_HERE/payment-status
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "paymentStatus": "completed"
+}
+
+### ====== COMMISSION CALCULATION EXAMPLES ======
+
+### EXAMPLE 1: Create Order with Single Vendor
+### Expected Commission: 10% of total price
+### If total = $100.00, commission = $10.00, vendor earnings = $90.00
+POST {{baseUrl}}/orders
+Content-Type: application/json
+Authorization: Bearer {{customerToken}}
+
+{
+  "items": [
+    {
+      "productId": "PRODUCT_ID_1",
+      "quantity": 1
+    }
+  ],
+  "paymentMethod": "credit_card",
+  "shippingAddress": {
+    "street": "100 Oak Ave",
+    "city": "San Francisco",
+    "state": "CA",
+    "postalCode": "94102",
+    "country": "USA"
+  }
+}
+
+### EXAMPLE 2: Create Order with Multiple Vendors
+### Expected: Commission calculated per vendor's items
+### Vendor A: $50 items → $45 earnings after $5 commission
+### Vendor B: $30 items → $27 earnings after $3 commission
+POST {{baseUrl}}/orders
+Content-Type: application/json
+Authorization: Bearer {{customerToken}}
+
+{
+  "items": [
+    {
+      "productId": "PRODUCT_FROM_VENDOR_A",
+      "quantity": 1
+    },
+    {
+      "productId": "PRODUCT_FROM_VENDOR_B",
+      "quantity": 1
+    }
+  ],
+  "paymentMethod": "credit_card",
+  "shippingAddress": {
+    "street": "200 Oak Ave",
+    "city": "San Francisco",
+    "state": "CA",
+    "postalCode": "94102",
+    "country": "USA"
+  },
+  "notes": "Multi-vendor order test"
+}
+
+### EXAMPLE 3: Create Order and Check Commission Breakdown
+### Response will show:
+### - totalPrice: Total order value
+### - totalCommission: Platform's 10% cut
+### - totalVendorAmount: What vendors earn combined
+### - commission object: Detailed breakdown
+POST {{baseUrl}}/orders
+Content-Type: application/json
+Authorization: Bearer {{customerToken}}
+
+{
+  "items": [
+    {
+      "productId": "PRODUCT_ID_1",
+      "quantity": 2
+    }
+  ],
+  "paymentMethod": "paypal",
+  "shippingAddress": {
+    "street": "300 Oak Ave",
+    "city": "Los Angeles",
+    "state": "CA",
+    "postalCode": "90001",
+    "country": "USA"
+  }
+}
+
+### EXAMPLE 4: View Orders and Commission Details (Customer)
+### Shows commissionBreakdown object for each order
+### Fields: totalPrice, commissionRate (10%), commissionAmount, vendorEarnings
+GET {{baseUrl}}/orders/my-orders
+Authorization: Bearer {{customerToken}}
+
+### EXAMPLE 5: View Vendor Orders and Earnings (Vendor)
+### Shows vendorBreakdown object:
+### - vendorItemsTotal: Total $ of this vendor's items
+### - commissionRate: 10%
+### - commissionPaid: What vendor pays platform
+### - vendorEarnings: What vendor keeps
+GET {{baseUrl}}/orders/vendor-orders
+Authorization: Bearer {{vendorToken}}
+
+### EXAMPLE 6: View All Orders with Commission (Admin)
+### Shows commissionBreakdown for all orders
+### Useful for: accounting, commission reporting, financial analysis
+GET {{baseUrl}}/orders
+Authorization: Bearer {{adminToken}}
+
+### EXAMPLE 7: Filter Orders by Status and Check Commission
+### Status filters: pending, confirmed, shipped, delivered, cancelled
+GET {{baseUrl}}/orders?status=pending
+Authorization: Bearer {{adminToken}}
+
+### EXAMPLE 8: Verify Commission Math
+### Order value: $199.98
+### Commission: $199.98 × 10% = $19.998 → rounds to $20.00
+### Vendor Earnings: $199.98 - $20.00 = $179.98
+### Request data:
+POST {{baseUrl}}/orders
+Content-Type: application/json
+Authorization: Bearer {{customerToken}}
+
+{
+  "items": [
+    {
+      "productId": "PRODUCT_ID_1",
+      "quantity": 2
+    }
+  ],
+  "paymentMethod": "credit_card",
+  "shippingAddress": {
+    "street": "400 Oak Ave",
+    "city": "Seattle",
+    "state": "WA",
+    "postalCode": "98101",
+    "country": "USA"
+  }
+}
+
+### COMMISSION TESTING GUIDE
+
+### TEST 1: Check Commission Calculation is 10%
+### 1. Create order with known product price
+### 2. Check response commission field:
+###    commission.rate should be "10%"
+###    commission.amount should be totalPrice × 0.10
+###    commission.vendorEarnings should be totalPrice - commission.amount
+
+### TEST 2: Verify Multi-Vendor Commission
+### 1. Create order with items from 2 different vendors
+### 2. GET /vendor-orders for each vendor
+### 3. Each should show their own commission breakdown:
+###    vendorEarnings = (vendor's items total) - (vendor's items × 10%)
+
+### TEST 3: Check Admin Commission Report
+### 1. Create 3+ orders with different amounts
+### 2. GET /orders as admin
+### 3. Sum all commissionAmount fields
+### 4. This = total platform revenue from commissions
+
+### TEST 4: Verify Commission Precision
+### 1. Create order with amount that creates floating point
+###    Example: $199.98 → commission $19.998 → should round to $20.00
+### 2. Verify commissionAmount is exactly 2 decimal places
+### 3. Verify vendorEarnings is exactly 2 decimal places
+
+### ====== TESTING INSTRUCTIONS ======
+
+### Step 1: Register Users
+### Execute these requests in order:
+### 1. Register as Customer (copy token from response)
+### 2. Register as Vendor (copy token from response)
+### 3. Register as Admin (copy token from response)
+
+### Step 2: Update Tokens
+### Replace @customerToken, @vendorToken, @adminToken at the top with actual tokens
+
+### Step 3: Create Products
+### Use vendor token to create products
+
+### Step 4: Create Orders
+### Use customer token, replace PRODUCT_ID_HERE with actual product ID
+
+### Step 5: Test Protected Routes
+### Customer can NOT create products (try with customer token on Create Product route)
+### Customer can NOT view all orders (try with customer token on Get All Orders route)
+### Admin can do EVERYTHING
