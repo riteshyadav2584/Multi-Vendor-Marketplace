@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Verification - MarketHub</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-logo">
+                <a href="index.html" class="logo-link">🛍️ MarketHub</a>
+            </div>
+            <div class="navbar-menu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="login.html" class="nav-link">Login</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="auth-section">
+        <div class="auth-container">
+            <div class="auth-form active">
+                <h2>Email Verification</h2>
+                <p id="verifyMessage" class="auth-subtitle">Verifying your email, please wait...</p>
+                <div id="verifyResult" class="message-box"></div>
+                <div class="auth-footer">
+                    <a href="login.html" class="auth-link">Back to Login</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 MarketHub. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        async function verifyEmail() {
+            const params = new URLSearchParams(window.location.search);
+            const token = params.get('token');
+            const messageEl = document.getElementById('verifyMessage');
+            const resultEl = document.getElementById('verifyResult');
+
+            if (!token) {
+                messageEl.textContent = 'Verification token is missing.';
+                resultEl.textContent = 'Please use the link sent to your email.';
+                resultEl.className = 'error-message';
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost:5000/api/auth/verify?token=${token}`);
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.message || 'Verification failed.');
+                }
+
+                messageEl.textContent = 'Email verified successfully!';
+                resultEl.textContent = data.message || 'You can now log in.';
+                resultEl.className = 'success-message';
+            } catch (error) {
+                messageEl.textContent = 'Email verification failed.';
+                resultEl.textContent = error.message || 'The verification link is invalid or expired.';
+                resultEl.className = 'error-message';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', verifyEmail);
+    </script>
+</body>
+</html>

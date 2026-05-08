@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Dashboard - MarketHub</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-logo">
+                <a href="index.html" class="logo-link">🛍️ MarketHub</a>
+            </div>
+            <div class="navbar-menu">
+                <span id="customerNameDisplay" class="nav-text"></span>
+                <img id="customerAvatar" src="" alt="Customer Avatar" class="customer-avatar" style="display:none; width:40px; height:40px; border-radius:50%; object-fit:cover; margin-left:10px;">
+                <button id="dashboardLogoutBtn" class="btn btn-danger">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dashboard Container -->
+    <section class="dashboard-section">
+        <div class="dashboard-container">
+            <!-- Sidebar -->
+            <aside class="dashboard-sidebar">
+                <div class="sidebar-menu">
+                    <a href="#" class="menu-item active" data-tab="overview">📊 Overview</a>
+                    <a href="#" class="menu-item" data-tab="cart">🛒 My Cart</a>
+                    <a href="#" class="menu-item" data-tab="orders">📋 My Orders</a>
+                    <a href="#" class="menu-item" data-tab="wishlist">❤️ Wishlist</a>
+                    <a href="#" class="menu-item" data-tab="groups">👥 My Groups</a>
+                    <a href="#" class="menu-item" data-tab="profile">👤 Profile</a>
+                    <a href="groups.html" class="menu-item">👥 Group Shopping</a>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="dashboard-main">
+                <!-- Overview Tab -->
+                <div id="overview" class="tab-content active">
+                    <h2>Dashboard Overview</h2>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">🛒</div>
+                            <div class="stat-info">
+                                <div class="stat-label">Items in Cart</div>
+                                <div id="cartItems" class="stat-value">0</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">📋</div>
+                            <div class="stat-info">
+                                <div class="stat-label">Total Orders</div>
+                                <div id="totalOrders" class="stat-value">0</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">💰</div>
+                            <div class="stat-info">
+                                <div class="stat-label">Total Spent</div>
+                                <div id="totalSpent" class="stat-value">₹0</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">👥</div>
+                            <div class="stat-info">
+                                <div class="stat-label">Active Groups</div>
+                                <div id="activeGroups" class="stat-value">0</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="recent-activity">
+                        <h3>Recent Activity</h3>
+                        <div id="recentActivity" class="activity-list">
+                            <p class="no-activity">No recent activity</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cart Tab -->
+                <div id="cart" class="tab-content">
+                    <h2>My Cart</h2>
+                    <div id="cartContainer">
+                        <p class="empty-state">Your cart is empty</p>
+                    </div>
+                </div>
+
+                <!-- Orders Tab -->
+                <div id="orders" class="tab-content">
+                    <h2>My Orders</h2>
+                    <div id="ordersContainer">
+                        <p class="empty-state">No orders found</p>
+                    </div>
+                </div>
+
+                <!-- Wishlist Tab -->
+                <div id="wishlist" class="tab-content">
+                    <h2>My Wishlist</h2>
+                    <div id="wishlistContainer">
+                        <p class="empty-state">Your wishlist is empty</p>
+                    </div>
+                </div>
+
+                <!-- Groups Tab -->
+                <div id="groups" class="tab-content">
+                    <h2>My Groups</h2>
+                    <div class="form-section">
+                        <div class="dashboard-group-forms">
+                            <div class="dashboard-form-card">
+                                <h3>Create New Group</h3>
+                                <form id="dashboardCreateGroupForm" class="form-grid">
+                                    <div class="form-group">
+                                        <label>Group Name</label>
+                                        <input type="text" id="dashboardGroupName" placeholder="e.g., Weekend Shopping" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Description (Optional)</label>
+                                        <textarea id="dashboardGroupDescription" rows="3" placeholder="What's this group for?"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Max Members</label>
+                                        <select id="dashboardMaxMembers">
+                                            <option value="5">5 members</option>
+                                            <option value="10" selected>10 members</option>
+                                            <option value="15">15 members</option>
+                                            <option value="20">20 members</option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Create Group</button>
+                                    <div id="dashboardCreateGroupError" class="error-message" style="display:none;"></div>
+                                    <div id="dashboardCreateGroupSuccess" class="success-message" style="display:none;"></div>
+                                </form>
+                            </div>
+                            <div class="dashboard-form-card">
+                                <h3>Join Existing Group</h3>
+                                <form id="dashboardJoinGroupForm" class="form-grid">
+                                    <div class="form-group">
+                                        <label>Group ID</label>
+                                        <input type="text" id="dashboardJoinGroupId" placeholder="Enter group ID" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Join Group</button>
+                                    <div id="dashboardJoinGroupError" class="error-message" style="display:none;"></div>
+                                    <div id="dashboardJoinGroupSuccess" class="success-message" style="display:none;"></div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="groups-section">
+                        <div class="groups-grid" id="dashboardGroupsContainer">
+                            <div class="loading">Loading groups...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile Tab -->
+                <div id="profile" class="tab-content">
+                    <h2>My Profile</h2>
+                    <div class="profile-section">
+                        <div class="profile-form">
+                            <div class="form-group">
+                                <label for="profileName">Name</label>
+                                <input type="text" id="profileName" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="profileEmail">Email</label>
+                                <input type="email" id="profileEmail" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="profilePhone">Phone</label>
+                                <input type="tel" id="profilePhone">
+                            </div>
+                            <div class="form-group">
+                                <label for="profileAddress">Address</label>
+                                <textarea id="profileAddress" rows="3"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Profile Picture</label>
+                                <div class="profile-picture-section">
+                                    <img id="profileImage" src="" alt="Profile Picture" style="display:none; width:100px; height:100px; border-radius:50%; object-fit:cover; margin-bottom:10px;">
+                                    <input type="file" id="profileImageInput" accept="image/*">
+                                    <button id="uploadProfileBtn" class="btn btn-primary">Upload Picture</button>
+                                </div>
+                            </div>
+                            <button id="updateProfileBtn" class="btn btn-primary">Update Profile</button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </section>
+
+    <script src="app.js"></script>
+    <script>
+        // Customer Dashboard JavaScript
+        document.addEventListener('DOMContentLoaded', function() {
+            const token = localStorage.getItem('authToken');
+            const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+
+            if (!token || user.role !== 'customer') {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Display user info
+            document.getElementById('customerNameDisplay').textContent = `Welcome, ${user.name}`;
+            if (user.profileImage) {
+                document.getElementById('customerAvatar').src = user.profileImage;
+                document.getElementById('customerAvatar').style.display = 'inline-block';
+            }
+
+            // Tab switching
+            const menuItems = document.querySelectorAll('.menu-item[data-tab]');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            menuItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const tabName = this.getAttribute('data-tab');
+
+                    // Remove active class from all menu items and tabs
+                    menuItems.forEach(mi => mi.classList.remove('active'));
+                    tabContents.forEach(tc => tc.classList.remove('active'));
+
+                    // Add active class to clicked menu item and corresponding tab
+                    this.classList.add('active');
+                    document.getElementById(tabName).classList.add('active');
+
+                    // Load data for specific tabs
+                    if (tabName === 'groups') {
+                        loadDashboardGroups();
+                    }
+                });
+            });
+
+            // Load dashboard data
+            loadDashboardData();
+
+            // Ensure the groups section starts in a loading state and refreshes
+            const groupsContainer = document.getElementById('dashboardGroupsContainer');
+            if (groupsContainer) {
+                groupsContainer.innerHTML = '<div class="loading">Loading groups...</div>';
+            }
+            loadDashboardGroups();
+
+            // Group create/join functionality
+            const dashboardCreateGroupForm = document.getElementById('dashboardCreateGroupForm');
+            const dashboardJoinGroupForm = document.getElementById('dashboardJoinGroupForm');
+            if (dashboardCreateGroupForm) {
+                dashboardCreateGroupForm.addEventListener('submit', createDashboardGroup);
+            }
+            if (dashboardJoinGroupForm) {
+                dashboardJoinGroupForm.addEventListener('submit', joinDashboardGroup);
+            }
+
+            // Profile update functionality
+            document.getElementById('updateProfileBtn').addEventListener('click', updateProfile);
+            document.getElementById('uploadProfileBtn').addEventListener('click', uploadProfileImage);
+
+            // Logout functionality
+            document.getElementById('dashboardLogoutBtn').addEventListener('click', function() {
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('currentUser');
+                window.location.href = 'index.html';
+            });
+        });
+
+        async function loadDashboardData() {
+            try {
+                const token = localStorage.getItem('authToken');
+                const response = await fetch('http://localhost:5000/api/auth/me', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                const result = await response.json();
+                if (response.ok && result.success && result.data) {
+                    const userData = result.data;
+
+                    // Update profile fields
+                    document.getElementById('profileName').value = userData.name;
+                    document.getElementById('profileEmail').value = userData.email;
+                    document.getElementById('profilePhone').value = userData.phone || '';
+                    document.getElementById('profileAddress').value = userData.address || '';
+
+                    if (userData.profileImage) {
+                        document.getElementById('profileImage').src = userData.profileImage;
+                        document.getElementById('profileImage').style.display = 'block';
+                    }
+
+                    // Load cart items count
+                    await loadCartCount();
+
+                    // Load orders count and total spent
+                    await loadOrdersSummary();
+
+                    // Load active groups count
+                    await loadGroupsCount();
+
+                    // Preload groups list so created groups show up in the dashboard
+                    await loadDashboardGroups();
+                } else {
+                    throw new Error(result.message || 'Unable to load dashboard data');
+                }
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+                document.getElementById('dashboardGroupsContainer').innerHTML =
+                    `<div class="empty-state">Unable to load groups. ${error.message || 'Please refresh the page.'}</div>`;
+            }
+        }
+
+        async function loadCartCount() {
+            try {
+                const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+                document.getElementById('cartItems').textContent = cart.length;
+            } catch (error) {
+                console.error('Error loading cart count:', error);
+                document.getElementById('cartItems').textContent = '0';
+            }
+        }
+
+        async function loadOrdersSummary() {
+            try {
+                const token = localStorage.getItem('authToken');
+                const response = await fetch('http://localhost:5000/api/orders/my-orders', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    const orders = result.data || [];
+                    document.getElementById('totalOrders').textContent = orders.length;
+
+                    const totalSpent = orders.reduce((sum, order) => sum + (order.totalAmount || 0), 0);
+                    document.getElementById('totalSpent').textContent = `₹${totalSpent.toFixed(2)}`;
+                } else {
+                    console.error('Order summary load failed');
+                }
+            } catch (error) {
+                console.error('Error loading orders summary:', error);
+            }
+        }
+
+        async function loadGroupsCount() {
+            try {
+                const token = localStorage.getItem('authToken');
+                const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                const response = await fetch(`http://localhost:5000/api/groups/my/${currentUser._id}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    const groups = result.data || [];
+                    const activeGroups = groups.filter(group => group.status === 'active').length;
+                    document.getElementById('activeGroups').textContent = activeGroups;
+                }
+            } catch (error) {
+                console.error('Error loading groups count:', error);
+            }
+        }
+
+        async function loadDashboardGroups() {
+            const container = document.getElementById('dashboardGroupsContainer');
+            if (container) {
+                container.innerHTML = '<div class="loading">Loading groups...</div>';
+            }
+
+            try {
+                const token = localStorage.getItem('authToken');
+                const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                console.log('[customer-dashboard] load groups', currentUser);
+                const response = await fetch(`http://localhost:5000/api/groups/my/${currentUser._id}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                const result = await response.json();
+                if (response.ok && result.success) {
+                    const groups = result.data || [];
+                    displayDashboardGroups(groups);
+                } else {
+                    document.getElementById('dashboardGroupsContainer').innerHTML =
+                        `<div class="empty-state">Failed to load groups. ${result.message || 'Please try again.'}</div>`;
+                }
+            } catch (error) {
+                console.error('Error loading dashboard groups:', error);
+                document.getElementById('dashboardGroupsContainer').innerHTML =
+                    `<div class="empty-state">Failed to load groups. ${error.message || 'Please try again.'}</div>`;
+            }
+        }
+
+        function displayDashboardGroups(groups) {
+            const container = document.getElementById('dashboardGroupsContainer');
+
+            if (groups.length === 0) {
+                container.innerHTML = '<div class="empty-state">No groups created yet. <a href="groups.html">Create your first group</a></div>';
+                return;
+            }
+
+            container.innerHTML = groups
+                .map(
+                    (group) => `
+                    <div class="group-card">
+                        <div class="group-header">
+                            <h3>${group.name}</h3>
+                            <span class="group-status ${group.status}">${group.status}</span>
+                        </div>
+                        <p class="group-description">${group.description || 'No description'}</p>
+                        <div class="group-info">
+                            <span>👥 ${group.members.length}/${group.maxMembers} members</span>
+                            <span>👤 Created by ${(group.adminId && group.adminId.name) || (group.creator && group.creator.name) || 'Unknown'}</span>
+                        </div>
+                        <div class="group-actions">
+                            <button class="btn btn-primary" onclick="window.location.href='group-cart.html?group=${group._id}'">View Cart</button>
+                            <button class="btn btn-secondary" onclick="navigator.clipboard.writeText('${group._id}'); alert('Group ID copied!')">Copy ID</button>
+                        </div>
+                    </div>
+                `)
+                .join('');
+        }
+
+        async function joinDashboardGroup(event) {
+            event.preventDefault();
+            const groupId = document.getElementById('dashboardJoinGroupId').value.trim();
+            const errorEl = document.getElementById('dashboardJoinGroupError');
+            const successEl = document.getElementById('dashboardJoinGroupSuccess');
+            errorEl.style.display = 'none';
+            successEl.style.display = 'none';
+
+            if (!groupId) {
+                errorEl.textContent = 'Please enter a group ID.';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            try {
+                const token = localStorage.getItem('authToken');
+                const response = await fetch(`http://localhost:5000/api/groups/${groupId}/join`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.message || 'Unable to join group');
+                }
+
+                successEl.textContent = result.message || 'Group joined successfully';
+                successEl.style.display = 'block';
+                document.getElementById('dashboardJoinGroupForm').reset();
+                await loadDashboardGroups();
+                await loadGroupsCount();
+            } catch (error) {
+                console.error('Join dashboard group error:', error);
+                errorEl.textContent = error.message || 'Failed to join group';
+                errorEl.style.display = 'block';
+            }
+        }
+
+        async function createDashboardGroup(event) {
+            event.preventDefault();
+            const name = document.getElementById('dashboardGroupName').value.trim();
+            const description = document.getElementById('dashboardGroupDescription').value.trim();
+            const maxMembers = parseInt(document.getElementById('dashboardMaxMembers').value, 10);
+            const errorEl = document.getElementById('dashboardCreateGroupError');
+            const successEl = document.getElementById('dashboardCreateGroupSuccess');
+            errorEl.style.display = 'none';
+            successEl.style.display = 'none';
+
+            if (!name) {
+                errorEl.textContent = 'Please enter a group name.';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            try {
+                const token = localStorage.getItem('authToken');
+                const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                const payload = { name, description, maxMembers, adminId: currentUser._id };
+                console.log('[customer-dashboard] create group payload', payload);
+                const response = await fetch('http://localhost:5000/api/groups/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.message || 'Unable to create group');
+                }
+
+                successEl.textContent = `${result.message || 'Group created successfully'}${result.data && result.data._id ? ` (ID: ${result.data._id})` : ''}`;
+                successEl.style.display = 'block';
+                document.getElementById('dashboardCreateGroupForm').reset();
+                await loadDashboardGroups();
+                await loadGroupsCount();
+            } catch (error) {
+                console.error('Create dashboard group error:', error);
+                errorEl.textContent = error.message || 'Failed to create group';
+                errorEl.style.display = 'block';
+            }
+        }
+
+        async function updateProfile() {
+            const phone = document.getElementById('profilePhone').value;
+            const address = document.getElementById('profileAddress').value;
+
+            try {
+                const token = localStorage.getItem('authToken');
+                const response = await fetch('http://localhost:5000/api/auth/me', {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ phone, address })
+                });
+
+                const result = await response.json();
+                if (response.ok && result.success) {
+                    const updatedUser = result.data;
+                    localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+                    alert('Profile updated successfully!');
+                } else {
+                    alert(result.message || 'Failed to update profile');
+                }
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                alert('Error updating profile');
+            }
+        }
+
+        async function uploadProfileImage() {
+            const fileInput = document.getElementById('profileImageInput');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                alert('Please select an image file');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = async function(event) {
+                const base64Image = event.target.result;
+
+                try {
+                    const token = localStorage.getItem('authToken');
+                    const response = await fetch('http://localhost:5000/api/auth/me', {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({ profileImage: base64Image })
+                    });
+
+                    const result = await response.json();
+                    if (response.ok && result.success) {
+                        const updatedUser = result.data;
+                        document.getElementById('profileImage').src = updatedUser.profileImage;
+                        document.getElementById('profileImage').style.display = 'block';
+                        localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+                        alert('Profile image uploaded successfully!');
+                    } else {
+                        alert(result.message || 'Failed to upload profile image');
+                    }
+                } catch (error) {
+                    console.error('Error uploading profile image:', error);
+                    alert('Error uploading profile image');
+                }
+            };
+
+            reader.readAsDataURL(file);
+        }
+    </script>
+</body>
+</html>

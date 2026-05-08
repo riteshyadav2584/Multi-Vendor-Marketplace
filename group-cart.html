@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Group Cart - MarketHub</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-logo">
+                <a href="index.html" class="logo-link">🛍️ MarketHub</a>
+            </div>
+            <div class="navbar-menu" id="navbarMenu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="groups.html" class="nav-link">Groups</a>
+                <input type="text" id="searchInput" class="search-input" placeholder="Search products...">
+                <div id="navAvatarContainer" style="display:none;">
+                    <img id="navAvatar" class="nav-avatar" src="" alt="Avatar">
+                </div>
+                <button id="navProfileBtn" class="btn btn-secondary" style="display:none;">Profile</button>
+                <button id="navLoginBtn" class="btn btn-primary">Login</button>
+                <button id="navDashboardBtn" class="btn btn-secondary" style="display:none;">Dashboard</button>
+                <button id="navLogoutBtn" class="btn btn-danger" style="display:none;">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Group Cart Section -->
+    <section class="cart-section">
+        <div class="container">
+            <div class="group-header">
+                <h1 id="groupName">Group Cart</h1>
+                <p id="groupDescription">Loading group details...</p>
+                <div class="group-stats">
+                    <span id="memberCount">0 members</span>
+                    <span id="itemCount">0 items</span>
+                </div>
+                <div class="group-members">
+                    <h3>Members</h3>
+                    <div id="memberList" class="member-list">Loading members...</div>
+                </div>
+            </div>
+
+            <!-- Add Item Form -->
+            <div class="form-section">
+                <h2>Add Item to Cart</h2>
+                <p style="color: var(--text-light); font-size: 14px; margin-bottom: 20px;">
+                    Start typing a product name to see suggestions, or enter the full name to add it directly.
+                </p>
+                <form id="addItemForm" class="form-grid">
+                    <div class="form-group">
+                        <label>Product Name</label>
+                        <input type="text" id="productSearch" placeholder="Type product name (e.g., Shirt, Shoes)..." autocomplete="off" required>
+                        <div id="productSuggestions" class="suggestions-list" style="display:none;"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>Quantity</label>
+                        <input type="number" id="itemQuantity" min="1" value="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Selected Product</label>
+                        <div id="selectedProduct" class="selected-product">
+                            <span class="no-selection">No product selected</span>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add to Cart</button>
+                    <div id="addItemError" class="error-message" style="display:none;"></div>
+                    <div id="addItemSuccess" class="success-message" style="display:none;"></div>
+                </form>
+            </div>
+
+            <!-- Shared Cart -->
+            <div class="shared-cart">
+                <h2>Shared Cart</h2>
+                <div id="cartItems" class="cart-items">
+                    <div class="loading">Loading cart...</div>
+                </div>
+
+                <!-- Checkout Section -->
+                <div id="checkoutSection" class="checkout-section" style="display:none;">
+                    <h3>Ready for Checkout</h3>
+                    <p>Items with majority approval can be purchased.</p>
+                    <button id="checkoutBtn" class="btn btn-large btn-primary">Final Checkout</button>
+                    <div id="checkoutError" class="error-message" style="display:none;"></div>
+                    <div id="checkoutSuccess" class="success-message" style="display:none;"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 MarketHub. All rights reserved. | Group Shopping</p>
+        </div>
+    </footer>
+
+    <script src="groups.js"></script>
+</body>
+</html>

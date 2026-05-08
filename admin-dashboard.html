@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - MarketHub</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-logo">
+                <a href="index.html" class="logo-link">🛍️ MarketHub</a>
+            </div>
+            <div class="navbar-menu">
+                <span id="adminNameDisplay" class="nav-text"></span>
+                <button id="adminLogoutBtn" class="btn btn-danger">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dashboard Container -->
+    <section class="dashboard-section">
+        <div class="dashboard-container">
+            <!-- Sidebar -->
+            <aside class="dashboard-sidebar">
+                <div class="sidebar-menu">
+                    <a href="#" class="menu-item active" data-tab="overview">📊 Overview</a>
+                    <a href="#" class="menu-item" data-tab="users">👥 Users</a>
+                    <a href="#" class="menu-item" data-tab="vendors">🏪 Vendors</a>
+                    <a href="#" class="menu-item" data-tab="orders">📋 Orders</a>
+                    <a href="#" class="menu-item" data-tab="commissions">💰 Commissions</a>
+                    <a href="#" class="menu-item" data-tab="products">📦 Products</a>
+                    <a href="#" class="menu-item" data-tab="reports">📈 Reports</a>
+                    <a href="groups.html" class="menu-item">👥 Group Shopping</a>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="dashboard-main">
+                <!-- Overview Tab -->
+                <div id="overview" class="tab-content active">
+                    <h2>Platform Overview</h2>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">👥</div>
+                            <div class="stat-info">
+                                <div class="stat-label">Total Users</div>
+                                <div id="totalUsers" class="stat-value">0</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">🏪</div>
+                            <div class="stat-info">
+                                <div class="stat-label">Active Vendors</div>
+                                <div id="totalVendors" class="stat-value">0</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">📦</div>
+                            <div class="stat-info">
+                                <div class="stat-label">Total Products</div>
+                                <div id="totalProducts" class="stat-value">0</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">📋</div>
+                            <div class="stat-info">
+                                <div class="stat-label">Total Orders</div>
+                                <div id="totalAdminOrders" class="stat-value">0</div>
+                            </div>
+                        </div>
+                        <div class="stat-card highlight">
+                            <div class="stat-icon">💰</div>
+                            <div class="stat-info">
+                                <div class="stat-label">Total Commission</div>
+                                <div id="totalCommission" class="stat-value">₹0.00</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">💵</div>
+                            <div class="stat-info">
+                                <div class="stat-label">Vendor Payouts</div>
+                                <div id="totalPayouts" class="stat-value">₹0.00</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Users Management Tab -->
+                <div id="users" class="tab-content">
+                    <h2>User Management</h2>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Profile Image</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Status</th>
+                                    <th>Joined</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody">
+                                <tr><td colspan="7" class="text-center">Loading users...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Vendors Management Tab -->
+                <div id="vendors" class="tab-content">
+                    <h2>Vendor Management</h2>
+                    <div class="vendors-filters">
+                        <input type="text" id="vendorSearchInput" class="search-input" placeholder="Search vendors...">
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Store Name</th>
+                                    <th>Owner</th>
+                                    <th>Products</th>
+                                    <th>Total Sales</th>
+                                    <th>Commission Paid</th>
+                                    <th>Rating</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="vendorsTableBody">
+                                <tr><td colspan="8" class="text-center">Loading vendors...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Orders Tab -->
+                <div id="orders" class="tab-content">
+                    <h2>Order Management</h2>
+                    <div class="orders-filters">
+                        <select id="adminOrderStatusFilter" class="filter-select">
+                            <option value="">All Orders</option>
+                            <option value="pending">Pending</option>
+                            <option value="confirmed">Confirmed</option>
+                            <option value="shipped">Shipped</option>
+                            <option value="delivered">Delivered</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                        <select id="adminPaymentStatusFilter" class="filter-select">
+                            <option value="">All Payments</option>
+                            <option value="pending">Pending</option>
+                            <option value="completed">Completed</option>
+                            <option value="failed">Failed</option>
+                            <option value="refunded">Refunded</option>
+                        </select>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Customer</th>
+                                    <th>Total</th>
+                                    <th>Commission</th>
+                                    <th>Order Status</th>
+                                    <th>Payment Status</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ordersTableBody">
+                                <tr><td colspan="8" class="text-center">Loading orders...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Commissions Tab -->
+                <div id="commissions" class="tab-content">
+                    <h2>Commission Analytics</h2>
+                    <div class="commissions-summary">
+                        <div class="commission-card">
+                            <h3>Total Commission Earned</h3>
+                            <p id="analyticsCommission" class="commission-amount">₹0.00</p>
+                        </div>
+                        <div class="commission-card">
+                            <h3>Pending Payouts</h3>
+                            <p id="pendingPayouts" class="commission-amount">₹0.00</p>
+                        </div>
+                        <div class="commission-card highlight">
+                            <h3>Average Commission per Order</h3>
+                            <p id="avgCommission" class="commission-amount">₹0.00</p>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Vendor</th>
+                                    <th>Total Orders</th>
+                                    <th>Total Commission Paid</th>
+                                    <th>Vendor Earnings</th>
+                                    <th>Last Order</th>
+                                </tr>
+                            </thead>
+                            <tbody id="commissionsTableBody">
+                                <tr><td colspan="5" class="text-center">Loading commission data...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Products Tab -->
+                <div id="products" class="tab-content">
+                    <h2>Product Management</h2>
+                    <div class="products-filters">
+                        <input type="text" id="adminProductSearch" class="search-input" placeholder="Search products...">
+                        <select id="adminCategoryFilter" class="filter-select">
+                            <option value="">All Categories</option>
+                            <option value="Electronics">Electronics</option>
+                            <option value="Clothing">Clothing</option>
+                            <option value="Home">Home & Garden</option>
+                            <option value="Sports">Sports</option>
+                            <option value="Books">Books</option>
+                            <option value="Toys">Toys</option>
+                        </select>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Product Name</th>
+                                    <th>Vendor</th>
+                                    <th>Price</th>
+                                    <th>Stock</th>
+                                    <th>Category</th>
+                                    <th>Rating</th>
+                                    <th>Created</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="productsTableBody">
+                                <tr><td colspan="8" class="text-center">Loading products...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Reports Tab -->
+                <div id="reports" class="tab-content">
+                    <h2>Financial Reports</h2>
+                    <div class="reports-filters">
+                        <select id="reportPeriod" class="filter-select">
+                            <option value="today">Today</option>
+                            <option value="week">Last 7 Days</option>
+                            <option value="month">Last 30 Days</option>
+                            <option value="year">Last Year</option>
+                        </select>
+                        <button id="downloadReportBtn" class="btn btn-secondary">📥 Download Report</button>
+                    </div>
+
+                    <div class="report-cards">
+                        <div class="report-card">
+                            <h3>Orders in Period</h3>
+                            <p id="reportOrders" class="report-number">0</p>
+                        </div>
+                        <div class="report-card">
+                            <h3>Total Revenue</h3>
+                            <p id="reportRevenue" class="report-number">₹0.00</p>
+                        </div>
+                        <div class="report-card highlight">
+                            <h3>Platform Commission</h3>
+                            <p id="reportPlatformCommission" class="report-number">₹0.00</p>
+                        </div>
+                        <div class="report-card">
+                            <h3>Vendor Payouts</h3>
+                            <p id="reportVendorPayouts" class="report-number">₹0.00</p>
+                        </div>
+                    </div>
+
+                    <div class="detailed-report">
+                        <h3>Top Vendors by Commission</h3>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Vendor</th>
+                                        <th>Orders</th>
+                                        <th>Revenue</th>
+                                        <th>Commission</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="topVendorsTableBody">
+                                    <tr><td colspan="4" class="text-center">Loading data...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </section>
+
+    <!-- Order Details Modal -->
+    <div id="orderDetailsModal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <span class="close" id="closeOrderDetails">&times;</span>
+            <h2>Order Details</h2>
+            <div id="orderDetailsContent">
+                <!-- Order details will be populated here -->
+            </div>
+            <div class="modal-actions">
+                <select id="modalOrderStatus" class="filter-select">
+                    <option value="pending">Pending</option>
+                    <option value="confirmed">Confirmed</option>
+                    <option value="shipped">Shipped</option>
+                    <option value="delivered">Delivered</option>
+                    <option value="cancelled">Cancelled</option>
+                </select>
+                <select id="modalPaymentStatus" class="filter-select">
+                    <option value="pending">Payment Pending</option>
+                    <option value="completed">Payment Completed</option>
+                    <option value="failed">Payment Failed</option>
+                    <option value="refunded">Payment Refunded</option>
+                </select>
+                <button id="updateOrderBtn" class="btn btn-primary">Update Order</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 MarketHub. All rights reserved. | Admin Dashboard</p>
+        </div>
+    </footer>
+
+    <script src="admin-dashboard.js"></script>
+</body>
+</html>

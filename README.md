@@ -1,295 +1,418 @@
-# Multi-Vendor Marketplace API
+# Multi-Vendor Marketplace - Frontend Documentation
 
-A Node.js Express server for a multi-vendor marketplace with user authentication, role-based access control, and MongoDB integration.
+## Overview
 
-## Features
+This is a responsive, single-page HTML/CSS/JavaScript frontend for the Multi-Vendor Marketplace. It provides customers, vendors, and admins with intuitive interfaces to manage products, orders, and commissions.
 
-- ✅ User registration and login
-- ✅ JWT-based authentication
-- ✅ Role-based access control (Customer, Vendor, Admin)
-- ✅ MongoDB integration with Mongoose
-- ✅ Password hashing with bcryptjs
-- ✅ CORS support
-- ✅ Error handling middleware
-- ✅ User profile management
-
-## Project Structure
+## File Structure
 
 ```
-backend/
-├── config/
-│   └── database.js           # MongoDB connection configuration
-├── middleware/
-│   └── auth.js               # JWT authentication & authorization middleware
-├── models/
-│   └── User.js               # User schema with roles and vendor details
-├── routes/
-│   └── auth.js               # Authentication routes (register, login, profile)
-├── index.js                  # Main server file
-├── package.json              # Dependencies
-└── .env.example              # Environment variables template
+frontend/
+├── index.html                 # Home page - Product listing & shopping cart
+├── login.html                 # Login/Register page
+├── vendor-dashboard.html      # Vendor dashboard
+├── admin-dashboard.html       # Admin dashboard
+├── styles.css                 # Global styles (responsive design)
+├── app.js                     # Home page logic
+├── auth.js                    # Authentication logic
+├── vendor-dashboard.js        # Vendor dashboard logic
+├── admin-dashboard.js         # Admin dashboard logic
+└── README.md                  # This file
 ```
 
-## Installation
+## Pages
 
-### Prerequisites
-- Node.js (v14+)
-- MongoDB (running locally or connection string)
-- npm or yarn
+### 1. Home Page (index.html)
 
-### Setup
+**Features:**
+- Product listing with filtering by category and sorting
+- Search functionality
+- Product cards with images, prices, stock info
+- Shopping cart with add/remove/quantity adjustment
+- Cart summary showing subtotal, commission (10%), and total
+- Checkout modal with shipping address form
+- Responsive for mobile, tablet, and desktop
 
-1. **Install dependencies** (already done):
-```bash
-npm install
+**URL:** `http://localhost:3000/` (or open index.html)
+
+**Functionality:**
+- Browse products by category
+- Search products by name
+- Sort by price and popularity
+- Add products to cart
+- View commission breakdown in real-time
+- Proceed to checkout with address and payment method
+
+### 2. Login/Register Page (login.html)
+
+**Features:**
+- Toggle between Login and Register forms
+- Registration with role selection (customer, vendor, admin)
+- Vendor-specific fields (store name, description, logo)
+- Email validation
+- Password strength indication
+- Error/success messages
+- Auto-redirect based on user role
+
+**URL:** `http://localhost:3000/login.html`
+
+**Functionality:**
+- Login with email and password
+- Register new account
+- Select user role (customer, vendor, admin)
+- For vendors: Add store information
+- Token-based authentication
+- Session persistence via localStorage
+
+### 3. Vendor Dashboard (vendor-dashboard.html)
+
+**Features:**
+- 6 tabbed navigation sections
+- Overview tab with stats (products, orders, earnings, ratings)
+- Product management (add, edit, delete)
+- Order tracking and status updates
+- Earnings reports with detailed breakdown
+- Store settings management
+
+**URL:** `http://localhost:3000/vendor-dashboard.html`
+
+**Tabs:**
+1. **Overview** - Dashboard statistics
+   - Total products
+   - Total orders
+   - Total earnings
+   - Average rating
+
+2. **My Products** - Product management
+   - List all products
+   - Edit product details
+   - Delete products
+
+3. **Add Product** - Create new products
+   - Name, description, category
+   - Price, stock, image URL
+   - Form validation
+
+4. **Orders** - View vendor's orders
+   - Filter by status
+   - See customer details
+   - Update order status
+   - View earnings per order
+
+5. **Earnings** - Financial reports
+   - Total revenue
+   - Total commission paid
+   - Net earnings
+   - Detailed earnings table by order
+
+6. **Settings** - Store configuration
+   - Store name and description
+   - Logo URL
+   - Contact email
+
+### 4. Admin Dashboard (admin-dashboard.html)
+
+**Features:**
+- 7 tabbed management sections
+- Platform-wide analytics
+- User/vendor/product/order management
+- Commission tracking and financial reports
+- Responsive data tables with actions
+
+**URL:** `http://localhost:3000/admin-dashboard.html`
+
+**Tabs:**
+1. **Overview** - Platform statistics
+   - Total users
+   - Active vendors
+   - Total products
+   - Total orders
+   - Total commission earned
+   - Total vendor payouts
+
+2. **Users** - User management
+   - View all users
+   - User details and roles
+   - User status management
+
+3. **Vendors** - Vendor management
+   - List all vendors
+   - Products per vendor
+   - Total sales tracking
+   - Commission paid per vendor
+   - Vendor ratings
+
+4. **Orders** - Order management
+   - View all orders
+   - Filter by order status
+   - Filter by payment status
+   - Order details modal
+   - Update order/payment status
+
+5. **Commissions** - Commission analytics
+   - Total commission earned
+   - Pending payouts
+   - Average commission per order
+   - Commission breakdown by vendor
+
+6. **Products** - Product management
+   - View all products
+   - Search products
+   - Filter by category
+   - Product details and analytics
+
+7. **Reports** - Financial reporting
+   - Select reporting period
+   - Order count in period
+   - Total revenue
+   - Platform commission
+   - Vendor payouts
+   - Top vendors by commission
+
+## Styling
+
+### Responsive Design
+
+All pages are fully responsive using CSS Grid and Flexbox:
+
+**Breakpoints:**
+- Desktop: > 768px - Full layout with sidebars
+- Tablet: 481px - 768px - Single column with collapsible menus
+- Mobile: ≤ 480px - Optimized for touch
+
+### Color Scheme
+
+```css
+Primary Color: #6366f1 (Indigo)
+Secondary Color: #ec4899 (Pink)
+Success: #10b981 (Green)
+Danger: #ef4444 (Red)
+Warning: #f59e0b (Orange)
+Info: #3b82f6 (Blue)
 ```
 
-2. **Create `.env` file** from `.env.example`:
-```bash
-cp .env.example .env
-```
+### Components
 
-3. **Update `.env` with your values**:
-```env
-MONGODB_URI=mongodb://localhost:27017/multivendor-marketplace
-JWT_SECRET=your_super_secret_jwt_key_change_this
-PORT=5000
-NODE_ENV=development
-```
+- **Buttons:** Primary, secondary, danger, large variants
+- **Forms:** Input fields, selects, textareas, radio groups
+- **Cards:** Product cards, stat cards, order cards
+- **Tables:** Responsive tables with status badges
+- **Modals:** For checkout, order details, product editing
+- **Navigation:** Sticky navbar with responsive menu
 
-## Running the Server
-
-### Development Mode (with auto-reload):
-```bash
-npm run dev
-```
-
-### Production Mode:
-```bash
-npm start
-```
-
-The server will start on `http://localhost:5000`
-
-## API Endpoints
+## API Integration
 
 ### Base URL
-```
+
+The frontend communicates with the backend API at:
+```javascript
 http://localhost:5000/api
 ```
 
-### Authentication Endpoints
+### Authentication
 
-#### 1. Register User
-- **URL**: `/auth/register`
-- **Method**: `POST`
-- **Body**:
-```json
-{
-  "name": "John Doe",
-  "email": "john@example.com",
-  "password": "password123",
-  "role": "customer"
-}
-```
-- **Valid roles**: `customer`, `vendor`, `admin` (defaults to `customer`)
-- **Response**:
-```json
-{
-  "success": true,
-  "message": "User registered successfully",
-  "data": {
-    "user": {
-      "_id": "...",
-      "name": "John Doe",
-      "email": "john@example.com",
-      "role": "customer",
-      "isActive": true,
-      "createdAt": "2026-04-10T..."
-    },
-    "token": "eyJhbGciOiJIUzI1NiIs..."
-  }
-}
-```
+- Tokens are stored in `localStorage` with key `authToken`
+- User data stored with key `currentUser`
+- Cart stored with key `cart`
+- Authorization header: `Bearer <token>`
 
-#### 2. Login User
-- **URL**: `/auth/login`
-- **Method**: `POST`
-- **Body**:
-```json
-{
-  "email": "john@example.com",
-  "password": "password123"
-}
-```
-- **Response**: Returns user object and JWT token (valid for 7 days)
+### Key API Endpoints Used
 
-#### 3. Get Current User (Protected)
-- **URL**: `/auth/me`
-- **Method**: `GET`
-- **Headers**:
-```
-Authorization: Bearer <your_token_here>
-```
-- **Response**: Current user details
+**Authentication:**
+- `POST /auth/register` - Register new user
+- `POST /auth/login` - Login user
+- `GET /auth/me` - Get current user
 
-#### 4. Admin Only Route (Protected)
-- **URL**: `/auth/admin-only`
-- **Method**: `GET`
-- **Headers**:
-```
-Authorization: Bearer <admin_token>
-```
-- **Response**: Only accessible by users with `admin` role
+**Products:**
+- `GET /products` - List all products
+- `GET /products/:id` - Get product details
+- `POST /products` - Create product (vendor/admin)
+- `PUT /products/:id` - Update product
+- `DELETE /products/:id` - Delete product
+- `GET /products/my-products` - Vendor's products
 
-#### 5. Vendor Only Route (Protected)
-- **URL**: `/auth/vendor-only`
-- **Method**: `GET`
-- **Headers**:
-```
-Authorization: Bearer <vendor_token>
-```
-- **Response**: Only accessible by users with `vendor` role
+**Orders:**
+- `POST /orders` - Create order (customer)
+- `GET /orders/my-orders` - Customer's orders
+- `GET /orders/vendor-orders` - Vendor's orders
+- `GET /orders` - All orders (admin)
+- `GET /orders/:id` - Order details
+- `PUT /orders/:id/status` - Update order status
+- `PUT /orders/:id/payment-status` - Update payment status (admin)
 
-#### 6. Health Check
-- **URL**: `/health`
-- **Method**: `GET`
-- **Response**: Server status
+## Usage Instructions
 
-## User Model Schema
+### 1. Start the Backend Server
 
-```javascript
-{
-  name: String (required, max 50 chars),
-  email: String (required, unique, valid email format),
-  password: String (required, min 6 chars, hashed),
-  role: String (enum: ['customer', 'vendor', 'admin'], default: 'customer'),
-  profileImage: String (optional),
-  isActive: Boolean (default: true),
-  vendorDetails: {
-    companyName: String,
-    companyDescription: String,
-    businessLicense: String,
-    taxId: String,
-    isApproved: Boolean (default: false)
-  },
-  timestamps: true (createdAt, updatedAt)
-}
-```
-
-## Authentication Flow
-
-1. **Register**: User provides name, email, password, and role
-2. **Password**: Automatically hashed using bcryptjs before storing
-3. **Token**: JWT token issued upon successful registration/login
-4. **Token Format**: `Authorization: Bearer <token>`
-5. **Token Validity**: 7 days
-6. **Protected Routes**: Include token in Authorization header to access protected endpoints
-
-## Role-Based Access Control
-
-| Role | Permissions |
-|------|-------------|
-| **Customer** | Basic user, can browse products, place orders |
-| **Vendor** | Can manage products, view sales, vendor-only routes |
-| **Admin** | Full system access, admin-only routes |
-
-## Error Handling
-
-All error responses follow this format:
-```json
-{
-  "success": false,
-  "message": "Error description",
-  "error": "Optional error details"
-}
-```
-
-Common HTTP Status Codes:
-- `200`: Success
-- `201`: Created
-- `400`: Bad Request
-- `401`: Unauthorized (missing/invalid token)
-- `403`: Forbidden (insufficient permissions)
-- `404`: Not Found
-- `500`: Server Error
-
-## Testing with Postman/cURL
-
-### Example: Register a Customer
 ```bash
-curl -X POST http://localhost:5000/api/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "Jane Dot",
-    "email": "jane@example.com",
-    "password": "securepass123",
-    "role": "customer"
-  }'
+cd backend
+npm install
+npm start
 ```
 
-### Example: Login
+Server runs on http://localhost:5000
+
+### 2. Open Frontend
+
 ```bash
-curl -X POST http://localhost:5000/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "jane@example.com",
-    "password": "securepass123"
-  }'
+# Open index.html in a web browser
+# Or use a local server:
+python -m http.server 3000
+# OR
+npx http-server
 ```
 
-### Example: Get Current User
-```bash
-curl -X GET http://localhost:5000/api/auth/me \
-  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIs..."
-```
+Frontend runs on http://localhost:3000 (or just open index.html)
 
-## Environment Variables
+### 3. Create Test Accounts
 
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `MONGODB_URI` | MongoDB connection string | `mongodb://localhost:27017/multivendor-marketplace` |
-| `JWT_SECRET` | Secret key for signing JWT tokens | `your_secret_key_here` |
-| `PORT` | Server port | `5000` |
-| `NODE_ENV` | Environment mode | `development` or `production` |
+Navigate to login.html and register:
 
-## Security Notes
+**Customer Account:**
+- Role: Customer
+- Email: customer@test.com
+- Password: test123
 
-- ⚠️ Change `JWT_SECRET` in production to a strong, random string
-- ⚠️ Never commit `.env` file to version control
-- ⚠️ Use HTTPS in production
-- ⚠️ Implement rate limiting for production
-- ⚠️ Passwords are automatically hashed before storage
-- ⚠️ Password fields are excluded from API responses
+**Vendor Account:**
+- Role: Vendor
+- Email: vendor@test.com
+- Password: test123
+- Store Name: My Store
+- Store Description: Test store
 
-## Next Steps
+**Admin Account:**
+- Role: Admin
+- Email: admin@test.com
+- Password: test123
 
-Future enhancements can include:
-- Email verification for new accounts
-- Password reset functionality
-- Refresh tokens
-- Google/OAuth authentication
-- Product management routes
-- Order management routes
-- Review and rating system
-- Payment integration
+### 4. Test Workflow
+
+**As Customer:**
+1. Login with customer account
+2. Browse products on home page
+3. Add products to cart
+4. View commission breakdown (10% of total)
+5. Checkout with shipping address
+6. View order in "My Orders"
+
+**As Vendor:**
+1. Login with vendor account
+2. Go to vendor dashboard
+3. Add new products
+4. View incoming orders
+5. Update order status (pending → confirmed → shipped → delivered)
+6. Check earnings report
+
+**As Admin:**
+1. Login with admin account
+2. View platform statistics
+3. Manage users/vendors/products
+4. View all orders across platform
+5. Track commission earnings
+6. Generate financial reports
+
+## Mobile Optimization
+
+The frontend is optimized for mobile devices:
+
+- **Touch-friendly buttons** with adequate spacing
+- **Responsive images** that scale appropriately
+- **Collapsible menus** on mobile
+- **Simplified forms** with large input fields
+- **Bottom-aligned checkout** for thumb reach
+- **Mobile-first CSS** approach
+
+## Features Implemented
+
+### Home Page
+- ✅ Product grid with filtering
+- ✅ Search functionality
+- ✅ Shopping cart with persistence
+- ✅ Commission display (10%)
+- ✅ Checkout workflow
+- ✅ Authentication UI
+
+### Login/Register
+- ✅ Form switching
+- ✅ Role selection
+- ✅ Vendor details form
+- ✅ Error handling
+- ✅ Success messages
+- ✅ Auto-redirect after auth
+
+### Vendor Dashboard
+- ✅ Dashboard overview with stats
+- ✅ Product management (CRUD)
+- ✅ Order tracking
+- ✅ Order status updates
+- ✅ Earnings reports
+- ✅ Store settings
+
+### Admin Dashboard
+- ✅ Platform overview
+- ✅ User management structure
+- ✅ Vendor management
+- ✅ Order management
+- ✅ Commission tracking
+- ✅ Product administration
+- ✅ Financial reports
+
+## Future Enhancements
+
+- [ ] Real-time notifications using WebSockets
+- [ ] Order tracking with map integration
+- [ ] Customer reviews and ratings system
+- [ ] Bulk operations (export CSV, etc.)
+- [ ] Advanced filtering and search
+- [ ] Payment gateway integration UI
+- [ ] Refund management
+- [ ] Vendor dashboard analytics charts
+- [ ] Dark mode theme
+- [ ] Multi-language support
+- [ ] PWA (Progressive Web App) support
+
+## Browser Compatibility
+
+- Chrome (latest)
+- Firefox (latest)
+- Safari (latest)
+- Edge (latest)
+- Mobile browsers (iOS Safari, Chrome Android)
+
+## Performance
+
+- Minimal external dependencies
+- Fast load times (no heavy frameworks)
+- Efficient API calls
+- Optimized images and assets
+- CSS Grid for efficient layouts
 
 ## Troubleshooting
 
-### MongoDB Connection Error
-- Ensure MongoDB is running
-- Check `MONGODB_URI` in `.env`
-- Verify connection string format
+### Pages Not Loading
+- Ensure backend server is running on port 5000
+- Open browser developer console (F12) for errors
+- Check localStorage for token validity
 
-### JWT Token Errors
-- Token may have expired (7-day validity)
-- Check token format: `Bearer <token>`
-- Ensure `JWT_SECRET` matches between registration and validation
+### API Errors
+- Verify backend API is responding
+- Check network tab in DevTools
+- Ensure you're logged in for protected routes
 
-### Port Already in Use
-- Change `PORT` in `.env` to another available port
-- Or kill the process using the current port
+### Styling Issues
+- Clear browser cache (Ctrl+Shift+Delete)
+- Check if styles.css is loading
+- Verify CSS variables in :root
+
+### Authentication Issues
+- Check localStorage for token and user data
+- Try logging out and back in
+- Clear browser storage if needed
 
 ## Support
 
-For issues or questions, please check the code comments or review the API documentation above.
+For issues or questions:
+1. Check browser console for error messages
+2. Verify backend is running and accessible
+3. Check network requests in DevTools
+4. Review API responses for error details

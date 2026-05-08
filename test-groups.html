@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Group Shopping Test - MarketHub</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 20px; border: 1px solid #ccc; border-radius: 8px; }
+        .success { color: green; }
+        .error { color: red; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+        input { padding: 8px; margin: 5px; width: 200px; }
+    </style>
+</head>
+<body>
+    <h1>Group Shopping Test Page</h1>
+
+    <div class="test-section">
+        <h2>1. Register Test User</h2>
+        <input type="text" id="testName" placeholder="Name" value="Test Customer">
+        <input type="email" id="testEmail" placeholder="Email" value="test@example.com">
+        <input type="password" id="testPassword" placeholder="Password" value="password123">
+        <button onclick="registerTestUser()">Register Test User</button>
+        <div id="registerResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>2. Login Test User</h2>
+        <button onclick="loginTestUser()">Login Test User</button>
+        <div id="loginResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>3. Create Test Group</h2>
+        <input type="text" id="groupName" placeholder="Group Name" value="Test Shopping Group">
+        <input type="text" id="groupDescription" placeholder="Description" value="A test group for shopping">
+        <input type="number" id="maxMembers" placeholder="Max Members" value="5">
+        <button onclick="createTestGroup()">Create Group</button>
+        <div id="createGroupResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>4. Get My Groups</h2>
+        <button onclick="getMyGroups()">Get My Groups</button>
+        <div id="myGroupsResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>5. Test Product Search</h2>
+        <input type="text" id="productSearch" placeholder="Search products" value="laptop">
+        <button onclick="searchProducts()">Search Products</button>
+        <div id="searchResult"></div>
+    </div>
+
+    <script>
+        let token = null;
+        let currentGroupId = null;
+
+        const API_BASE = 'http://localhost:5000/api';
+
+        async function registerTestUser() {
+            const resultDiv = document.getElementById('registerResult');
+            try {
+                const response = await fetch(`${API_BASE}/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: document.getElementById('testName').value,
+                        email: document.getElementById('testEmail').value,
+                        password: document.getElementById('testPassword').value,
+                        role: 'customer'
+                    })
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    resultDiv.innerHTML = '<span class="success">✓ User registered successfully</span>';
+                    token = data.data.token;
+                    localStorage.setItem('authToken', token);
+                    localStorage.setItem('currentUser', JSON.stringify(data.data.user));
+                } else {
+                    resultDiv.innerHTML = `<span class="error">✗ Registration failed: ${data.message}</span>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<span class="error">✗ Error: ${error.message}</span>`;
+            }
+        }
+
+        async function loginTestUser() {
+            const resultDiv = document.getElementById('loginResult');
+            try {
+                const response = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: document.getElementById('testEmail').value,
+                        password: document.getElementById('testPassword').value
+                    })
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    resultDiv.innerHTML = '<span class="success">✓ Login successful</span>';
+                    token = data.data.token;
+                    localStorage.setItem('authToken', token);
+                    localStorage.setItem('currentUser', JSON.stringify(data.data.user));
+                } else {
+                    resultDiv.innerHTML = `<span class="error">✗ Login failed: ${data.message}</span>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<span class="error">✗ Error: ${error.message}</span>`;
+            }
+        }
+
+        async function createTestGroup() {
+            if (!token) {
+                document.getElementById('createGroupResult').innerHTML = '<span class="error">✗ Please login first</span>';
+                return;
+            }
+
+            const resultDiv = document.getElementById('createGroupResult');
+            try {
+                const response = await fetch(`${API_BASE}/groups`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        name: document.getElementById('groupName').value,
+                        description: document.getElementById('groupDescription').value,
+                        maxMembers: parseInt(document.getElementById('maxMembers').value)
+                    })
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    resultDiv.innerHTML = '<span class="success">✓ Group created successfully</span>';
+                    currentGroupId = data.group._id;
+                } else {
+                    resultDiv.innerHTML = `<span class="error">✗ Group creation failed: ${data.message}</span>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<span class="error">✗ Error: ${error.message}</span>`;
+            }
+        }
+
+        async function getMyGroups() {
+            if (!token) {
+                document.getElementById('myGroupsResult').innerHTML = '<span class="error">✗ Please login first</span>';
+                return;
+            }
+
+            const resultDiv = document.getElementById('myGroupsResult');
+            try {
+                const response = await fetch(`${API_BASE}/groups`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    resultDiv.innerHTML = `<span class="success">✓ Found ${data.length} groups</span><br><pre>${JSON.stringify(data, null, 2)}</pre>`;
+                } else {
+                    resultDiv.innerHTML = `<span class="error">✗ Failed to get groups: ${data.message}</span>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<span class="error">✗ Error: ${error.message}</span>`;
+            }
+        }
+
+        async function searchProducts() {
+            const resultDiv = document.getElementById('searchResult');
+            try {
+                const query = document.getElementById('productSearch').value;
+                const response = await fetch(`${API_BASE}/products/search?q=${encodeURIComponent(query)}`);
+                const data = await response.json();
+                if (response.ok) {
+                    resultDiv.innerHTML = `<span class="success">✓ Found ${data.length} products</span><br><pre>${JSON.stringify(data.slice(0, 3), null, 2)}</pre>`;
+                } else {
+                    resultDiv.innerHTML = `<span class="error">✗ Search failed: ${data.message}</span>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<span class="error">✗ Error: ${error.message}</span>`;
+            }
+        }
+
+        // Auto-load token if exists
+        window.addEventListener('load', () => {
+            token = localStorage.getItem('token');
+            if (token) {
+                document.getElementById('loginResult').innerHTML = '<span class="success">✓ Token found in localStorage</span>';
+            }
+        });
+    </script>
+</body>
+</html>

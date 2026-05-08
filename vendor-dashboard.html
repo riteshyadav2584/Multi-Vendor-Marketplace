@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendor Dashboard - MarketHub</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-logo">
+                <a href="index.html" class="logo-link">🛍️ MarketHub</a>
+            </div>
+            <div class="navbar-menu">
+                <span id="vendorNameDisplay" class="nav-text"></span>
+                <img id="vendorAvatar" src="" alt="Vendor Avatar" class="vendor-avatar" style="display:none; width:40px; height:40px; border-radius:50%; object-fit:cover; margin-left:10px;">
+                <button id="dashboardLogoutBtn" class="btn btn-danger">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dashboard Container -->
+    <section class="dashboard-section">
+        <div class="dashboard-container">
+            <!-- Sidebar -->
+            <aside class="dashboard-sidebar">
+                <div class="sidebar-menu">
+                    <a href="#" class="menu-item active" data-tab="overview">📊 Overview</a>
+                    <a href="#" class="menu-item" data-tab="products">📦 My Products</a>
+                    <a href="#" class="menu-item" data-tab="add-product">➕ Add Product</a>
+                    <a href="#" class="menu-item" data-tab="orders">📋 Orders</a>
+                    <a href="#" class="menu-item" data-tab="earnings">💰 Earnings</a>
+                    <a href="#" class="menu-item" data-tab="settings">⚙️ Settings</a>
+                    <a href="groups.html" class="menu-item">👥 Group Shopping</a>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="dashboard-main">
+                <!-- Overview Tab -->
+                <div id="overview" class="tab-content active">
+                    <h2>Dashboard Overview</h2>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">📦</div>
+                            <div class="stat-info">
+                                <div class="stat-label">Total Products</div>
+                                <div id="totalProducts" class="stat-value">0</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">📋</div>
+                            <div class="stat-info">
+                                <div class="stat-label">Total Orders</div>
+                                <div id="totalOrders" class="stat-value">0</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">💰</div>
+                            <div class="stat-info">
+                                <div class="stat-label">Total Earnings</div>
+                                <div id="totalEarnings" class="stat-value">₹0.00</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">⭐</div>
+                            <div class="stat-info">
+                                <div class="stat-label">Average Rating</div>
+                                <div id="avgRating" class="stat-value">0.0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Products Tab -->
+                <div id="products" class="tab-content">
+                    <h2>My Products</h2>
+                    <div id="vendorProductsList" class="products-list">
+                        <div class="loading">Loading products...</div>
+                    </div>
+                </div>
+
+                <!-- Add Product Tab -->
+                <div id="add-product" class="tab-content">
+                    <h2>Add New Product</h2>
+                    <form id="addProductForm" class="form-grid">
+                        <div class="form-group">
+                            <label>Product Name</label>
+                            <input type="text" id="productName" required placeholder="Enter product name">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea id="productDescription" required placeholder="Describe your product..." rows="4"></textarea>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Category</label>
+                                <select id="productCategory" required>
+                                    <option value="">Select Category</option>
+                                    <option value="Electronics">Electronics</option>
+                                    <option value="Clothing">Clothing</option>
+                                    <option value="Home">Home & Garden</option>
+                                    <option value="Sports">Sports</option>
+                                    <option value="Books">Books</option>
+                                    <option value="Toys">Toys</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Price (₹)</label>
+                                <input type="number" id="productPrice" required min="0.01" step="0.01" placeholder="0.00">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Stock Quantity</label>
+                                <input type="number" id="productStock" required min="0" placeholder="0">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Product Image URL</label>
+                                <input type="url" id="productImage" required placeholder="https://example.com/image.jpg">
+                                <small>Enter a direct link to your product image</small>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>SKU (optional)</label>
+                            <input type="text" id="productSKU" placeholder="Product SKU">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Add Product</button>
+                        <div id="addProductError" class="error-message" style="display:none;"></div>
+                        <div id="addProductSuccess" class="success-message" style="display:none;"></div>
+                    </form>
+                </div>
+
+                <!-- Orders Tab -->
+                <div id="orders" class="tab-content">
+                    <h2>My Orders</h2>
+                    <div class="orders-filters">
+                        <select id="orderStatusFilter" class="filter-select">
+                            <option value="">All Orders</option>
+                            <option value="pending">Pending</option>
+                            <option value="confirmed">Confirmed</option>
+                            <option value="shipped">Shipped</option>
+                            <option value="delivered">Delivered</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                    <div id="vendorOrdersList" class="orders-list">
+                        <div class="loading">Loading orders...</div>
+                    </div>
+                </div>
+
+                <!-- Earnings Tab -->
+                <div id="earnings" class="tab-content">
+                    <h2>Earnings Report</h2>
+                    <div class="earnings-summary">
+                        <div class="earnings-card">
+                            <h3>Total Revenue</h3>
+                            <p id="totalRevenue" class="earnings-amount">₹0.00</p>
+                        </div>
+                        <div class="earnings-card">
+                            <h3>Commission Paid</h3>
+                            <p id="totalCommissionPaid" class="earnings-amount">₹0.00</p>
+                        </div>
+                        <div class="earnings-card highlight">
+                            <h3>Net Earnings</h3>
+                            <p id="netEarnings" class="earnings-amount">₹0.00</p>
+                        </div>
+                    </div>
+                    <div id="earningsTable" class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Items Total</th>
+                                    <th>Commission (10%)</th>
+                                    <th>Your Earnings</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="earningsTableBody">
+                                <tr><td colspan="5" class="text-center">Loading earnings...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Settings Tab -->
+                <div id="settings" class="tab-content">
+                    <h2>Store Settings</h2>
+                    <form id="settingsForm" class="settings-form">
+                        <div class="form-group">
+                            <label>Your Name</label>
+                            <input type="text" id="settingUserName" required placeholder="Your display name">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Profile Photo</label>
+                            <input type="file" id="settingProfileImage" accept="image/*">
+                            <div id="profileImagePreviewContainer" style="display:none; margin-top: 10px;">
+                                <img id="profileImagePreview" src="" alt="Profile Preview" style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%; border: 1px solid #e5e7eb;">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Store Name</label>
+                            <input type="text" id="settingStoreName" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Store Description</label>
+                            <textarea id="settingStoreDescription" rows="4"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Store Logo URL</label>
+                            <input type="url" id="settingStoreLogo">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Store Email</label>
+                            <input type="email" id="settingStoreEmail">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Save Settings</button>
+                        <div id="settingsError" class="error-message" style="display:none;"></div>
+                        <div id="settingsSuccess" class="success-message" style="display:none;"></div>
+                    </form>
+                </div>
+            </main>
+        </div>
+    </section>
+
+    <!-- Edit Product Modal -->
+    <div id="editProductModal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <span class="close" id="closeEditProduct">&times;</span>
+            <h2>Edit Product</h2>
+            <form id="editProductForm">
+                <input type="hidden" id="editProductId">
+                <div class="form-group">
+                    <label>Product Name</label>
+                    <input type="text" id="editProductName" required>
+                </div>
+                <div class="form-group">
+                    <label>Price</label>
+                    <input type="number" id="editProductPrice" required min="0.01" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label>Stock</label>
+                    <input type="number" id="editProductStock" required min="0">
+                </div>
+                <div class="form-group">
+                    <label>Image URL</label>
+                    <input type="url" id="editProductImage" placeholder="https://example.com/image.jpg">
+                    <small>Leave empty to keep current image</small>
+                </div>
+                <div id="editProductImagePreviewContainer" class="image-preview" style="display:none; margin-top: 10px;">
+                    <img id="editProductImagePreview" src="" alt="Product Image Preview" style="width: 100%; max-width: 300px; object-fit: cover; border: 1px solid #e5e7eb; border-radius: 8px;">
+                </div>
+                <button type="submit" class="btn btn-primary">Update Product</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 MarketHub. All rights reserved. | Vendor Dashboard</p>
+        </div>
+    </footer>
+
+    <script src="vendor-dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Group Shopping - MarketHub</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-logo">
+                <a href="index.html" class="logo-link">🛍️ MarketHub</a>
+            </div>
+            <div class="navbar-menu" id="navbarMenu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="#products" class="nav-link">Products</a>
+                <input type="text" id="searchInput" class="search-input" placeholder="Search products...">
+                <div id="navAvatarContainer" style="display:none;">
+                    <img id="navAvatar" class="nav-avatar" src="" alt="Avatar">
+                </div>
+                <button id="navProfileBtn" class="btn btn-secondary" style="display:none;">Profile</button>
+                <button id="navLoginBtn" class="btn btn-primary">Login</button>
+                <button id="navDashboardBtn" class="btn btn-secondary" style="display:none;">Dashboard</button>
+                <button id="navLogoutBtn" class="btn btn-danger" style="display:none;">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Groups Section -->
+    <section class="groups-section">
+        <div class="container">
+            <h1>Group Shopping</h1>
+            <p>Shop together with friends and family! Create groups, share carts, and vote on items.</p>
+
+            <!-- Create Group Form -->
+            <div class="form-section">
+                <h2>Create New Group</h2>
+                <form id="createGroupForm" class="form-grid">
+                    <div class="form-group">
+                        <label>Group Name</label>
+                        <input type="text" id="groupName" required placeholder="e.g., Weekend Shopping">
+                    </div>
+                    <div class="form-group">
+                        <label>Description (Optional)</label>
+                        <textarea id="groupDescription" rows="3" placeholder="What's this group for?"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Max Members</label>
+                        <select id="maxMembers" required>
+                            <option value="5">5 members</option>
+                            <option value="10" selected>10 members</option>
+                            <option value="15">15 members</option>
+                            <option value="20">20 members</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create Group</button>
+                    <div id="createGroupError" class="error-message" style="display:none;"></div>
+                    <div id="createGroupSuccess" class="success-message" style="display:none;"></div>
+                </form>
+            </div>
+
+            <!-- Join Group Form -->
+            <div class="form-section">
+                <h2>Join Existing Group</h2>
+                <form id="joinGroupForm" class="form-grid">
+                    <div class="form-group">
+                        <label>Group ID</label>
+                        <input type="text" id="joinGroupId" required placeholder="Enter group ID">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Join Group</button>
+                    <div id="joinGroupError" class="error-message" style="display:none;"></div>
+                    <div id="joinGroupSuccess" class="success-message" style="display:none;"></div>
+                </form>
+            </div>
+
+            <!-- My Groups -->
+            <div class="groups-list">
+                <h2>My Groups</h2>
+                <div id="groupsContainer" class="groups-grid">
+                    <div class="loading">Loading groups...</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 MarketHub. All rights reserved. | Group Shopping</p>
+        </div>
+    </footer>
+
+    <script src="groups.js"></script>
+</body>
+</html>
